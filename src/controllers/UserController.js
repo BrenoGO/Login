@@ -21,7 +21,6 @@ module.exports = {
       const user = await User.findOne({ where: { email } })
       if (!user) return res.status(401).send()
       if (!await user.checkPassword(password)) return res.status(401).send()
-      console.log('passed checkPassword check')
       await user.update({ authToken: user.generateToken() })
       return res.status(200).json({ user })
     } catch (err) {
@@ -86,6 +85,6 @@ module.exports = {
     }
   },
   async private (req, res) {
-    res.status(200).json({ok: 'entered in private route'})
+    res.status(200).json({ ok: 'entered in private route' })
   }
 }
