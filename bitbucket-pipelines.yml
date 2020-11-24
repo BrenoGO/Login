@@ -2,7 +2,7 @@
 image: node:10.15.3
 
 pipelines:
-  default:
+  master:
     - step:
         caches:
           - node
