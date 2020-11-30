@@ -9,8 +9,8 @@ pipelines:
           caches:
             - node
           script:
-            - npm install -g @vue/cli
             - cd front-end
+            - npm install
             - npm run build
             - cd ../
             - mv back-end api
