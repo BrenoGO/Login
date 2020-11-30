@@ -9,4 +9,4 @@ curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 # Install NodeJS (incl. npm):
 sudo apt-get install nodejs -y
 # Install forever:
-sudo npm install forever -g
+sudo npm install pm2 -g

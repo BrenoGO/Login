@@ -3,14 +3,24 @@ image: node:10.15.3
 
 pipelines:
   branches:
-    master:
+    staging:
       - step:
+          name: build front-end
+          caches:
+            - node
+          script:
+            - cd front-end
+            - npm run build
+            - cd ../
+            - mv back-end api
+      - step:
+          name: aws code deploy
           caches:
             - node
           script:
             - apt-get update
             - apt-get install -y zip
-            - zip -r application.zip .
+            - zip -r application.zip api front-end/dist
             - pipe: atlassian/aws-code-deploy:0.5.4
               variables:
                 AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
