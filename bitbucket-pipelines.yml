@@ -13,7 +13,6 @@ pipelines:
             - npm install
             - npm run build
             - cd ../
-            - mv back-end api
       - step:
           name: aws code deploy
           caches:
@@ -21,7 +20,9 @@ pipelines:
           script:
             - apt-get update
             - apt-get install -y zip
-            - zip -r application.zip api front-end/dist
+            - ls
+            - mv back-end api
+            - zip -r application.zip ./api ./front-end/dist
             - pipe: atlassian/aws-code-deploy:0.5.4
               variables:
                 AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
