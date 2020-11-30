@@ -5,49 +5,40 @@ pipelines:
   branches:
     staging:
       - step:
-          name: build front-end
-          caches:
-            - node
-          script:
-            - cd front-end
-            - npm install
-            - npm run build
-            - cd ../
-          artifacts:
-            - dist
-      - step:
-          name: aws code deploy
+          name: Continuous Deployment
           caches:
             - node
           script:
             - apt-get update
             - apt-get install -y zip
-            - mv back-end api
             - cd front-end
+            - npm install
+            - npm run build
             - ls
             - cd ../
+            - mv back-end api
             - ls
-            - zip -r application.zip ./api dist ./scripts ./appspec.yml
-            # - pipe: atlassian/aws-code-deploy:0.5.4
-            #   variables:
-            #     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-            #     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-            #     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-            #     COMMAND: 'upload'
-            #     APPLICATION_NAME: $APPLICATION_NAME
-            #     ZIP_FILE: 'application.zip'
-            #     S3_BUCKET: $S3_BUCKET
-            #     VERSION_LABEL: 'Login-1.0.0'
-            # - pipe: atlassian/aws-code-deploy:0.5.4
-            #   variables:
-            #     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-            #     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-            #     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-            #     COMMAND: 'deploy'
-            #     APPLICATION_NAME: $APPLICATION_NAME
-            #     DEPLOYMENT_GROUP: $DEPLOYMENT_GROUP
-            #     WAIT: 'true'
-            #     S3_BUCKET: $S3_BUCKET
-            #     VERSION_LABEL: 'Login-1.0.0'
-            #     IGNORE_APPLICATION_STOP_FAILURES: 'true'
-            #     FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
+            - zip -r application.zip ./api ./front-end/dist ./scripts ./appspec.yml
+            - pipe: atlassian/aws-code-deploy:0.5.4
+              variables:
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                COMMAND: 'upload'
+                APPLICATION_NAME: $APPLICATION_NAME
+                ZIP_FILE: 'application.zip'
+                S3_BUCKET: $S3_BUCKET
+                VERSION_LABEL: 'Login-1.0.0'
+            - pipe: atlassian/aws-code-deploy:0.5.4
+              variables:
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                COMMAND: 'deploy'
+                APPLICATION_NAME: $APPLICATION_NAME
+                DEPLOYMENT_GROUP: $DEPLOYMENT_GROUP
+                WAIT: 'true'
+                S3_BUCKET: $S3_BUCKET
+                VERSION_LABEL: 'Login-1.0.0'
+                IGNORE_APPLICATION_STOP_FAILURES: 'true'
+                FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
